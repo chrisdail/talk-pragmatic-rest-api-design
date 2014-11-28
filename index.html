@@ -14,7 +14,7 @@
 
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<link rel="stylesheet" href="css/reveal.min.css">
+        <link rel="stylesheet" href="css/reveal.min.css">
 		<link rel="stylesheet" href="css/theme/default.css" id="theme">
 
 		<!-- For syntax highlighting -->
@@ -30,6 +30,20 @@
 				document.getElementsByTagName( 'head' )[0].appendChild( link );
 			}
 		</script>
+    
+    <style>
+      .reveal table {
+        margin: auto;
+        border-collapse: collapse;
+        border-spacing: 0;
+      }
+
+      .reveal table th,
+      .reveal table td {
+        padding: 0.2em 0.5em 0.2em 0.5em;
+        border-bottom: 1px solid;
+      }
+    </style>
 
 		<!--[if lt IE 9]>
 		<script src="lib/js/html5shiv.js"></script>
@@ -42,6 +56,432 @@
 
 			<!-- Any section element inside of this container is displayed as a slide -->
 			<div class="slides">
+                <section>
+					<h1>Pragmatic RESTful API Design</h1>
+					<p>Chris Dail - @chrisdail</p>
+					<p>Director, Software Engineering at EMC</p>
+					<p><small>https://github.com/chrisdail/talk-pragmatic-rest-api-design</small></p>
+				</section>
+				
+				<section data-background="#651212">
+					<h2>Disclaimer</h2>
+					<ul>
+						<li>This is a pragmatic approach to REST (not a dogmatic one).</li>
+						<li>Ideas here are simply my opinion. I favour user experience and developer sanity over idealogical 'correctness'.</li>
+						<li>There is no REST spec or standard (but there is for HTTP)</li>
+					</ul>
+				</section>
+                
+				<section>
+					<h2>Why APIs?</h2>
+					<p>We love to think our products can do everything.</p>
+					<p>Let me share a Secret: <span class="fragment">They won't</span></p>
+				</section>
+				
+				<section>
+					<h2>A need for Integration</h2>
+          <ul>
+            <li>Customer's don't want a product; they want a <strong>solution</strong> to their problem.</li>
+            <li>APIs allow integrating your product into the customer's solution.</li>
+            <li>Prevents the feeling of 'lock in'</li>
+          </ul>
+				</section>
+        
+        <section>
+          <h2>APIs added after v1.0</h2>
+          <p>Most companies discover they need an API long after v1.0</p>
+          <p>Often an afterthough and maybe not given the attention it needs</p>
+        </section>
+				
+				<section>
+					<h2>What Kind of API do I need?</h2>
+					<p class="fragment">REST API</p>
+				</section>
+				
+				<section>
+					<h2>What is REST?</h2>
+					<p>Representational State Transfer</p>
+					<blockquote cite="http://en.wikipedia.org/wiki/Representational_state_transfer">
+						&ldquo;HTTP based RESTful APIs are defined with these aspects: base URI, such as http://example.com/resources/ an Internet media type for the data. This is often JSON but can be any other valid Internet media type (e.g. XML, Atom, microformats, images, etc.) standard HTTP methods (e.g., GET, PUT, POST, or DELETE)&rdquo; - Wikipedia
+					</blockquote>
+				</section>
+				
+				<section>
+					<h2>Or simply...</h2>
+					<ul>
+						<li>Web APIs</li>
+						<li>Web Services</li>
+						<li class="fragment">... but <strong>not</strong> SOAP</li>
+					</ul>
+				</section>
+
+				<section>
+					<h2>Why REST?</h2>
+					<ul>
+						<li>Universal language, the Web</li>
+						<li>Universally available protocol, HTTP</li>
+						<li>Name one programming language that cannot talk to an HTTP server</li>
+					</ul>
+				</section>
+				
+				<section>
+					<h2>Elements to a Good API</h2>
+					<ul>
+            <li>Features (I'll assume you have this covered)</li>
+						<li>User Experience - Know your user</li>
+            <li>Great Documentation</li>
+					</ul>
+				</section>
+				
+        <section>
+          <h1>User Experience</h1>
+          <ul>
+            <li>External Consistency - Does it work like other APIs</li>
+            <li>Internal Consistency - Is the API consistent within itself</li>
+          </ul>
+        </section>
+				
+        <section>
+          <h2>URLs</h2>
+          <ul>
+            <li>Resource Oriented</li>
+            <li>Nouns not Verbs</li>
+            <li>Pluralize Resources</li>
+            <li>Lower case, hypen separated</li>
+            <li>Short segments (1-2 words)</li>
+            <li>Top level component (when API gets big)</li>
+          </ul>
+          <pre><code>
+            /widgets
+            /storage-systems     # Storage or Systems is not specific enough
+            /foo/things          # 'foo' component allows multiple /things
+          </code></pre>
+        </section>
+        
+        <section>
+          <h2>Query Parameters</h2>
+          <ul>
+            <li>Used for optional parameters, options, search, filter, paging</li>
+            <li>Should never be required - Sensible Defaults</li>
+            <li>Data format case</li>
+            <li>Short (1-2 words)</li>
+          </ul>
+          <pre><code>
+            /resources?type=volume
+            /widgets?limit=100
+            /foo/things?tenant=coke
+            /widgets?q=frank
+          </code></pre>
+        </section>
+        
+        <section>
+          <h3 style="text-transform: none">CamelCase vs snake_case</h3>
+          <ul>
+            <li>vi vs emacs</li>
+            <li>Consistency!</li>
+          </ul>
+        </section>
+        
+        <section>
+          <h2>Data Formats</h2>
+          <ul>
+            <li>JSON First, XML if required</li>
+            <li>Case Consistency with all formats</li>
+            <li>Keep fields short (1-3 words)</li>
+            <li>Handle Collections Differently</li>
+          </ul>
+          <pre><code>
+            &lt;things>
+              &lt;thing>&lt;/thing>
+              &lt;thing>&lt;/thing>
+            &lt;/things>
+            
+            "things: [
+              { },
+              { }
+            ]
+          </code></pre>
+        </section>
+        
+        <section>
+          <h2>Field Formatting</h2>
+          <ul>
+            <li>Numbers as numbers <br /><code>"size_gb": 10</code> not <code>"size": "10gb"</code></li>
+            <li>Dates ISO 8601 (xsd:dateTime, JavaScript standard) <br /><code>yyyy-mm-dd'T'hh[:mm]</code></li>
+          </ul>
+        </section>
+        
+        <section>
+          <h2>Read vs Write data models</h2>
+          <ul>
+            <li>Separate models for read/write</li>
+            <li>Command Query Responsibility Segregation (CQRS)</li>
+            <li>Example: ID is required for update, but not create</li>
+            <li>Example: Password required on create, not part of read</li>
+          </ul>
+        </section>
+        
+        <section data-markdown>
+          <script type="text/template">
+## HTTP Methods
+Create, Read, Update, Delete -> POST, GET, PUT and DELETE
+
+| Operation                     | Summary
+| ----------------------------- | -------------------------
+| `POST   /widgets`             | Creates a new Widget
+| `GET    /widgets`             | Lists widgets
+| `GET    /widgets/12`          | Gets a Widget
+| `PUT    /widgets/12`          | Updates a widget (whole resource)
+| `DELETE /widgets/12`          | Deletes a widget
+          </script>
+        </section>
+
+        <section data-markdown>
+          <script type="text/template">
+## HTTP Methods <2>
+| Operation                     | Summary
+| ----------------------------- | -------------------------
+| `PATCH  /widgets/12`          | Partial Update of resource
+| `GET    /widgets/12/knobs`    | Retrieves sub-collection knobs
+| `POST   /widgets/12/knobs`    | Updates sub-collection knobs
+| `POST   /widgets/12/action`   | Performs an action on a resource (Verbs here)
+          </script>
+        </section>
+
+        <section>
+          <h2>Linking</h2>
+          <ul>
+            <li>Self-describing relationships and capabilities</li>
+            <li>HATEOAS - Links as part of data</li>
+            <li>Link Headers</li>            
+          </ul>
+          <pre><code>
+            GET /widgets/12
+            Link: &lt;https://host/v1/widgets/12/knobs>; rel="knobs"
+          </code></pre>
+        </section>
+        
+        <section data-markdown>
+          <script type="text/template">
+## Paging
+- You can't always return everything (Scalability)
+- Offset or Marker based
+- Include links for next/previous/last/first
+
+| Query Parameter                   | Example (GET)
+| --------------------------------- | -------------------------
+| **limit**, count, max             | `/widgets?limit=100`
+| **offset**, index, page           | `/widgets?limit=100&amp;offset=100`
+| **marker**, since_id              | `/widgets`
+          </script>
+        </section>
+        
+        <section>
+          <h2>Paging - Example</h2>
+          <pre><code>
+            GET /widgets?limit=100
+            Link: &lt;GET /widgets?limit=100&amp;offset=100>; rel="next", 
+                  &lt;GET /widgets?limit=100&amp;offset=22300>; rel="last"
+          
+            GET /widgets?limit=100
+            Link: &lt;GET /widgets?limit=100&amp;marker=id123>; rel="next"
+          </code></pre>
+        </section>
+        
+        <section data-markdown>
+          <script type="text/template">
+## Sorting, Filtering and Searching
+Rarely do users want everything
+
+| Query           | Example (GET)
+| --------------- | -------------------------
+| sort            | `/widgets?sort=name`
+|                 | `/widgets?sort=owner,-last_modified`
+| q               | `/widgets?q=frank&amp;sort=owner`
+| -               | `/widgets?type=floodle`
+|                 | `/widgets?state=pending&amp;tenant=coke`
+| fields          | `/widgets?fields=name,state,type,id`
+          </script>
+        </section>
+
+        <section data-markdown>
+          <script type="text/template">
+## Error Codes
+
+| Code                        | Description
+| --------------------------- | -------------------------
+| `200 OK`                    | Request processed as expected
+| `201 Created`               | Request created a resource, Set Location Header
+| `202 Accepted`              | Request accepted and pending (Asynchronous), Set Location Header
+| `204 No Content`            | Same as 200 except no content returned
+| `302 Moved Temporarily`     | Standard redirect, Set Location Header
+| `304 Not Modified`          | Cache still good. User requests If-None-Match or If-Modified-Since 
+          </script>
+        </section>
+        
+        <section data-markdown>
+          <script type="text/template">
+## Error Codes <2>
+
+| Code                        | Description
+| --------------------------- | -------------------------
+| `400 Bad Request`           | Client submitted bad request (Validation)
+| `401 Unauthorized`          | Not authenticated or token expired
+| `403 Forbidden`             | User does not have permission
+| `404 Not Found`             | Resource not found for ID
+| `500 Internal Server Error` | Server error, should not be retried
+| `503 Service Unavailable`   | Retriable error, typically for connection issues
+          </script>
+        </section>
+        
+        <section>
+          <h2>Versioning</h2>
+          <ul>
+            <li>Content Negotiation - <code>Accepts: application/vnd.widgets+json; version="1"</code></li>
+            <li>URL Based - <code>https://hostname/v1/widgets/12</code></li>
+          </ul>
+        </section>
+        
+        <section>
+          <h2>URL Based</h2>
+          <ul>
+            <li>Easiest to implement for you</li>
+            <li>Easiest to implement for users (no headers)</li>
+            <li>Most widely used in public APIs</li>
+          </ul>
+        </section>
+        
+        <section>
+          <h2>API Change Types</h2>
+          <ul>
+            <li>
+              Backwards Compatible
+              <ul>
+                <li>Additions only. Never remove or rename.</li>
+                <li>New fields added to model must be optional</li>
+              </ul>
+            </li>
+            <li>
+              Backwards Incompatible
+              <ul>
+                <li>Renaming or moving API roots or fields</li>
+                <li>Deleting APIs</li>
+                <li>Adding Required Fields</li>
+                <li>Changes to authentication or headers/cookies</li>
+                <li>Changes to behaviour</li>
+              </ul>
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Versioning Rules</h2>
+          <ul>
+            <li>API version should be a positive integer. Ex: v1, v2, v3</li>
+            <li>Not every product release needs an API version</li>
+            <li>New version only when <strong>backwards incompatible change</strong> required</li>
+            <li>It is easiest to add versioning concepts in v1!</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Common Data Formats</h2>
+          <ul>
+            <li>Errors</li>
+            <li>Async Tasks</li>
+            <li>Links</li>
+          </ul>
+        </section>
+        
+        <section>
+          <h2>Error Format</h2>
+          <pre><code>
+          POST /widgets/12
+          {
+            "code": 9001,
+            "description": "Error updating resource",
+            "details": "Error updating resource with ID 12 because of bla"
+          }
+          </code></pre>
+        </section>
+        
+        <section>
+          <h2>Error Format (Validation)</h2>
+          <pre><code>
+          POST /widgets/12
+          {
+            "code": "9001",
+            "description": "Validation Error",
+            "details": "Validation error with the hostname field"
+            "fields": [
+              {
+                "name": "hostname",
+                "code": "2001",
+                "message": "Hostname field not specified but is required"
+              }
+            ]
+          }
+          </code></pre>
+        </section>
+        
+        <section>
+          <h2>Authentication</h2>
+          <ul>
+            <li>Always use SSL</li>
+            <li>Public APIs, use standard SSO like OAuth</li>
+            <li>HTTP Basic Auth, Auth Token in cookies/headers</li>
+            <li>Brower Explorable</li>
+          </ul>
+        </section>
+        
+        <section>
+          <h2>Caching</h2>
+          <ul>
+            <li>ETag - Hash/sum in <code>ETag</code> header. <code>If-None-Match</code></li>
+            <li>Last-Modified - <code>Last-Modified</code> header. <code>If-Modified-Since</code></li>
+          </ul>
+        </section>
+        
+        <section>
+          <h2>Microservices</h2>
+          <ul>
+            <li>Distributed applications, Netflix</li>
+            <li>Applications build with small decoupled, self-contained components</li>
+            <li>Each component handles a single job</li>
+            <li>Components communicate with each other via well established APIs</li>
+          </ul>
+        </section>
+        
+        <section>
+          <h2>Documentation</h2>
+          <ul>
+            <li>Github and Stackoverflow good examples</li>
+            <li>Consider generating documentation</li>
+            <li>Inline testing</li>
+            <li>Swagger</li>
+          </ul>
+        </section>
+        
+        <section>
+          <h2>Random Things</h2>
+          <ul>
+            <li>Consolidate APIs under single domain</li>
+            <li>Support GZip encoding</li>
+            <li>Consider an SDK for target user language</li>
+          </ul>
+        </section>
+        
+        <section data-markdown>
+          <script type="text/template">
+          ## Swagger
+          
+          - Online Editor http://editor.swagger.io
+          - UI - Interactive Documentation
+          - Code Generation (Client and Server)
+          </script>
+        </section>
+				
+				<!--
 				<section>
 					<h1>Reveal.js</h1>
 					<h3>HTML Presentations Made Easy</h3>
@@ -62,7 +502,6 @@
 					</aside>
 				</section>
 
-				<!-- Example of nested vertical slides -->
 				<section>
 					<section>
 						<h2>Vertical Slides</h2>
@@ -352,7 +791,7 @@ function linkify( selector ) {
 					<h1>THE END</h1>
 					<h3>BY Hakim El Hattab / hakim.se</h3>
 				</section>
-
+                -->
 			</div>
 
 		</div>
@@ -361,23 +800,14 @@ function linkify( selector ) {
 		<script src="js/reveal.min.js"></script>
 
 		<script>
-
-			// Full list of configuration options available here:
-			// https://github.com/hakimel/reveal.js#configuration
 			Reveal.initialize({
 				controls: true,
 				progress: true,
 				history: true,
 				center: true,
+				theme: 'moon',
+				transition: 'linear',
 
-				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
-				transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
-
-				// Parallax scrolling
-				// parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
-				// parallaxBackgroundSize: '2100px 900px',
-
-				// Optional libraries used to extend on reveal.js
 				dependencies: [
 					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
 					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
@@ -387,8 +817,6 @@ function linkify( selector ) {
 					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
 				]
 			});
-
 		</script>
-
 	</body>
 </html>
