@@ -1,0 +1,71 @@
+swagger: '2.0'
+
+info:
+  version: "1.0.0"
+  title: Sample Swagger Application
+basePath: /v1
+paths:
+  /widgets:
+    post:
+      description: |
+        Creates a new `Widget`.
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: Widget Create Request
+          required: true
+          schema:
+            $ref: "#/definitions/WidgetCreate"
+      responses:
+        400:
+          description: Bad Request
+    get:
+      description: |
+        Lists Widgets
+      produces:
+        - application/json
+      parameters:
+        - name: limit
+          in: query
+          description: Maximum number of results
+          required: false
+          type: number
+          format: integer
+      responses:
+        200:
+          description: Successful response
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Widget"
+  /widgets/{id}:
+    get:
+      description: |
+        Gets a Widget
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: Successful Response
+          schema:
+            $ref: "#/definitions/Widget"
+definitions:
+  Widget:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+  WidgetCreate:
+    properties:
+      name:
+        type: string
