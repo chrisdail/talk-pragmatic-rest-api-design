@@ -66,13 +66,14 @@
 						<li>This is a pragmatic approach to REST (not a dogmatic one).</li>
 						<li>Ideas here are simply my opinion. I favour user experience and developer sanity over idealogical 'correctness'.</li>
 						<li>There is no REST spec or standard (but there is for HTTP)</li>
+            <li>Enterprise Software and Products vs SaaS</li>
 					</ul>
 				</section>
                 
 				<section>
 					<h2>Why APIs?</h2>
-					<p>We love to think our products can do everything.</p>
-					<p>Let me share a Secret: <span class="fragment">They won't</span></p>
+					<p>We love to think our products will solve all the customer's problems.</p>
+					<p class="fragment">This rarely happens!</p>
 				</section>
 				
 				<section>
@@ -85,14 +86,16 @@
 				</section>
         
         <section>
-          <h2>APIs a v1.0 Feature</h2>
-          <p>Most companies discover they need an API long after v1.0</p>
-          <p>Often an afterthough and maybe not given the attention it needs</p>
+          <h2>v1.0 Feature</h2>
+          <ul>
+            <li>Most companies discover they need an API long after v1.0</li>
+            <li>Often an afterthough and maybe not given the attention it needs</li>
+          </ul>
         </section>
 				
 				<section>
 					<h2>What Kind of API do I need?</h2>
-					<p class="fragment">REST API</p>
+          <img src="images/rest-area.png">
 				</section>
 				
 				<section>
@@ -108,7 +111,7 @@
 					<ul>
 						<li>Web APIs</li>
 						<li>Web Services</li>
-						<li class="fragment">... but <strong>not</strong> SOAP</li>
+            <img class="fragment" src="images/no-soap.jpg">
 					</ul>
 				</section>
 
@@ -132,7 +135,8 @@
 				
         <section>
           <h1>User Experience</h1>
-          <ul>
+          <img src="images/ux.jpg">
+          <ul class="fragment">
             <li>External Consistency - Does it work like other APIs</li>
             <li>Internal Consistency - Is the API consistent within itself</li>
           </ul>
@@ -189,22 +193,30 @@
               <li>Handle Collections Differently</li>
             </ul>
             <pre><code>
-              &lt;things>
-                &lt;thing>&lt;/thing>
-                &lt;thing>&lt;/thing>
-              &lt;/things>
-
               "things: [
                 { },
                 { }
               ]
+              
+              &lt;things>
+                &lt;thing>&lt;/thing>
+                &lt;thing>&lt;/thing>
+              &lt;/things>
             </code></pre>
           </section>
 
           <section>
             <h2>Field Formatting</h2>
             <ul>
-              <li>Numbers as numbers <br /><code>"size_gb": 10</code> not <code>"size": "10gb"</code></li>
+              <li>Numbers as <strong>numbers</strong>
+                <pre><code>
+  // This
+  "size_gb": 10
+
+  // Not this
+  "size": "10gb"
+                </code></pre>
+              </li>
               <li>Dates ISO 8601 (xsd:dateTime, JavaScript standard) <br /><code>yyyy-mm-dd'T'hh[:mm]</code></li>
             </ul>
           </section>
@@ -213,8 +225,8 @@
         <section>
           <h2>Read vs Write data models</h2>
           <ul>
-            <li>Separate models for read/write</li>
             <li>Command Query Responsibility Segregation (CQRS)</li>
+            <li>Separate models for read/write</li>
             <li>Example: ID is required for update, but not create</li>
             <li>Example: Password required on create, not part of read</li>
           </ul>
@@ -274,7 +286,7 @@ Create, Read, Update, Delete -> POST, GET, PUT and DELETE
 | --------------------------------- | -------------------------
 | **limit**, count, max             | `/widgets?limit=100`
 | **offset**, index, page           | `/widgets?limit=100&amp;offset=100`
-| **marker**, since_id              | `/widgets`
+| **marker**, since_id, max_id      | `/widgets?marker=id123`
             </script>
           </section>
 
@@ -300,9 +312,9 @@ Rarely do users want everything
 | --------------- | -------------------------
 | sort            | `/widgets?sort=name`
 |                 | `/widgets?sort=owner,-last_modified`
-| q               | `/widgets?q=frank&amp;sort=owner`
+| q               | `/widgets?q=frank&sort=owner`
 | -               | `/widgets?type=floodle`
-|                 | `/widgets?state=pending&amp;tenant=coke`
+|                 | `/widgets?state=pending&tenant=coke`
 | fields          | `/widgets?fields=name,state,type,id`
           </script>
         </section>
@@ -343,8 +355,10 @@ Rarely do users want everything
           <section>
             <h1>Versioning</h1>
             <ul>
-              <li>Content Negotiation - <code>Accepts: application/vnd.widgets+json; version="1"</code></li>
-              <li>URL Based - <code>https://hostname/v1/widgets/12</code></li>
+              <li>Content Negotiation<br />
+              <code>Accepts: application/vnd.widgets+json; version="1"</code></li>
+              <li>URL Based<br />
+              <code>https://hostname/v1/widgets/12</code></li>
             </ul>
           </section>
 
@@ -357,6 +371,11 @@ Rarely do users want everything
             </ul>
           </section>
 
+          <section>
+            <h2>Backwards Compatibility</h2>
+            <img src="images/backwards-compatible.jpg">
+          </section>
+          
           <section>
             <h2>API Change Types</h2>
             <ul>
@@ -407,7 +426,7 @@ Rarely do users want everything
             POST /widgets/12
             {
               "code": 9001,
-              "description": "Error updating resource",
+              "message": "Error updating resource",
               "details": "Error updating resource with ID 12 because of bla"
             }
             </code></pre>
@@ -419,7 +438,7 @@ Rarely do users want everything
             POST /widgets/12
             {
               "code": "9001",
-              "description": "Validation Error",
+              "message": "Validation Error",
               "details": "Validation error with the hostname field"
               "fields": [
                 {
@@ -439,7 +458,7 @@ Rarely do users want everything
             <li>Always use SSL</li>
             <li>Public APIs, use standard SSO like OAuth</li>
             <li>HTTP Basic Auth, Auth Token in cookies/headers</li>
-            <li>Brower Explorable</li>
+            <li>Browser Explorable</li>
           </ul>
         </section>
         
@@ -456,7 +475,7 @@ Rarely do users want everything
           <ul>
             <li>Consolidate APIs under single domain</li>
             <li>Support GZip encoding</li>
-            <li>Consider an SDK for target user language</li>
+            <li>Consider an SDK for target developers</li>
           </ul>
         </section>
         
@@ -489,6 +508,14 @@ Rarely do users want everything
           - Code Generation (Client and Server)
           - Alternatives: I/O Docs, Carte
           </script>
+        </section>
+        
+        <section>
+          <h2>Game</h2>
+          <ul>
+            <li>What's Wrong With This API</li>
+            <li>Name some other poor APIs</li>
+          </ul>
         </section>
 			</div>
 		</div>
