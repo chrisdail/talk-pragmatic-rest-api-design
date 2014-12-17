@@ -303,11 +303,11 @@ Create, Read, Update, Delete -> POST, GET, PUT and DELETE
             <h2>Paging - Example</h2>
             <pre><code>
               GET /widgets?limit=100
-              Link: &lt;GET /widgets?limit=100&amp;offset=100>; rel="next", 
-                    &lt;GET /widgets?limit=100&amp;offset=22300>; rel="last"
+              Link: &lt;/widgets?limit=100&amp;offset=100>; rel="next", 
+                    &lt;/widgets?limit=100&amp;offset=22300>; rel="last"
 
               GET /widgets?limit=100
-              Link: &lt;GET /widgets?limit=100&amp;marker=id123>; rel="next"
+              Link: &lt;/widgets?limit=100&amp;marker=id123>; rel="next"
             </code></pre>
           </section>
         </section>
